@@ -122,7 +122,7 @@
 
 ## Схема базы данных
 
-![alt text](image.png)
+![alt text](img/image.png)
 
 ## Список созданных запросов
 

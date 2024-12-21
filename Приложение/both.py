@@ -33,13 +33,13 @@ def login_user(email, password, db_connection):
         return None
 
 def open_second_window(db_connection):
-    window.destroy()  # Закрываем первое окно
-    create_second_window(db_connection)  # Открываем второе окно
+    window.destroy()
+    create_second_window(db_connection)
 
 def create_first_window():
     global window
     OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"/home/klekel/Рабочий стол/Tkinter-Designer-master./build/assets/frame0")
+    ASSETS_PATH = OUTPUT_PATH / Path(r"assets/frame0")
 
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
@@ -93,14 +93,14 @@ def create_first_window():
     button_2 = Button( image=button_image_2, borderwidth=0, highlightthickness=0, command=try_login, relief="flat" )
     button_2.place(x=454.0, y=418.0, width=117.0, height=52.0)
 
-    canvas.create_text( 259.0, 10.0, anchor="nw", text="Авторизация", fill="#000000", font=("Fruktur Regular", 48 * -1) )
+    canvas.create_text( 259.0, 13.0, anchor="nw", text="Авторизация", fill="#000000", font=("Fruktur Regular", 48 * -1) )
     window.resizable(False, False)
     window.mainloop()
 
 def create_second_window(db_connection):
     global window
     OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"/home/klekel/Рабочий стол/Tkinter-Designer-master./build/assets/frame1")
+    ASSETS_PATH = OUTPUT_PATH / Path(r"assets/frame1")
 
     def register_user(db_connection):
         first_name = first_name_entry.get()
@@ -120,7 +120,6 @@ def create_second_window(db_connection):
             cursor.execute(query, (first_name, last_name, email, phone_number, random.randint(100, 1000), password, transport_concession))
             db_connection.commit()
 
-            # Получаем user_id только что зарегистрированного пользователя
             cursor.execute("select user_id from get_user_id(%s)", (email,))
             user_id = cursor.fetchone()
             cursor.close()
@@ -129,9 +128,6 @@ def create_second_window(db_connection):
             window.destroy()
             open_raspisanie_window( user_id, db_connection)
 
-
-            # Переходим в окно расписания (если есть функция schedule_window)
-            # schedule_window(user_id, db_connection)
         except Exception as e:
             messagebox.showerror("Ошибка", str(e))
 
@@ -184,13 +180,7 @@ def create_second_window(db_connection):
     concession = [ "без льгот", "пол цены", "бесплатно"]
     style = ttk.Style()
     style.theme_use("default")
-    style.configure("TCombobox",
-                fieldbackground="#474747",
-                background="#474747",
-                foreground="white",
-                selectbackground="#474747",
-                selectforeground="white",
-                font=("Fruktur Regular", 48 * -1))
+    style.configure("TCombobox", fieldbackground="#474747", background="#474747", foreground="white", selectbackground="#474747", selectforeground="white", font=("Fruktur Regular", 48 * -1))
     concession_combo = ttk.Combobox(window,background="#474747", values=concession)
     concession_combo.place(x=286.0, y=359.0, width=267.0, height=55.0)
 
@@ -220,7 +210,7 @@ def create_second_window(db_connection):
 
 def open_lychny_kabinet_window(user_id, db_connection):
     OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"/home/klekel/Рабочий стол/Tkinter-Designer-master./build/assets/frame2")
+    ASSETS_PATH = OUTPUT_PATH / Path(r"assets/frame2")
 
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
@@ -267,11 +257,9 @@ def open_lychny_kabinet_window(user_id, db_connection):
         ticket_window = Tk()
         ticket_window.title("Купленные билеты")
 
-        # Создаем стиль для настройки внешнего вида Treeview
         style = ttk.Style(ticket_window)
-        style.theme_use("default")  # Используем стандартную тему
+        style.theme_use("default")
 
-        # Настраиваем цвет фона для Treeview
         style.configure("Treeview", background="#FFBF87", fieldbackground="#FFBF87", foreground="black")
         style.configure("Treeview.Heading", background="#FFBF87", fieldbackground="#FFBF87", foreground="black")
 
@@ -293,12 +281,10 @@ def open_lychny_kabinet_window(user_id, db_connection):
             confirm = messagebox.askyesno("Подтверждение", "Вы уверены, что хотите удалить аккаунт?")
             if confirm:
                 try:
-                    # Удаляем все билеты пользователя
                     cursor = db_connection.cursor()
                     cursor.execute("CALL delete_tickets(%s)", (user_id,))
                     db_connection.commit()
 
-                    # Удаляем пользователя
                     cursor.execute("CALL delete_user(%s)", (user_id,))
                     db_connection.commit()
                     cursor.close()
@@ -310,8 +296,8 @@ def open_lychny_kabinet_window(user_id, db_connection):
                     messagebox.showerror("Ошибка", str(e))
 
     def open_rasp_window_f_lk(user_id,db_connection):
-      lych_kab.destroy()  # Закрываем первое окно
-      open_raspisanie_window(user_id,db_connection)  # Открываем второе окно
+      lych_kab.destroy()
+      open_raspisanie_window(user_id,db_connection)
 
     canvas = Canvas( lych_kab, bg = "#474747", height = 507, width = 833, bd = 0, highlightthickness = 0, relief = "ridge")
 
@@ -366,7 +352,7 @@ def open_lychny_kabinet_window(user_id, db_connection):
 
 def open_raspisanie_window( user_id, db_connection):
     OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"/home/klekel/Рабочий стол/Tkinter-Designer-master./build/assets/frame3")
+    ASSETS_PATH = OUTPUT_PATH / Path(r"assets/frame3")
 
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
@@ -380,34 +366,29 @@ def open_raspisanie_window( user_id, db_connection):
 
             cursor.execute("BEGIN")
 
-            # Получаем текущий баланс пользователя
+
             cursor.execute("SELECT money FROM Users WHERE user_id = %s", (user_id,))
             user_balance = cursor.fetchone()[0]
 
-            # Получаем стоимость билета
             cursor.execute("SELECT price FROM Tickets WHERE user_id = %s AND route_id = %s", (user_id, route_id))
             ticket_price = cursor.fetchone()[0] if cursor.rowcount > 0 else 0
 
-            # Проверяем, хватает ли денег
             if user_balance < ticket_price:
                 messagebox.showerror("Ошибка", "На балансе недостаточно денег!")
-                cursor.execute("ROLLBACK")  # Откат транзакции
+                cursor.execute("ROLLBACK")
                 return
 
-            # Уменьшаем баланс пользователя
             cursor.execute("UPDATE Users SET money = money - %s WHERE user_id = %s", (ticket_price, user_id))
 
-            # Добавляем билет в таблицу Tickets
+
             query = "CALL add_ticket(%s, %s, %s, %s, %s, CURRENT_DATE)"
             cursor.execute(query, (user_id, route_id, from_station, to_station, train_type))
 
-            # Фиксируем транзакцию
             db_connection.commit()
             cursor.close()
 
             messagebox.showinfo("Успешно", "Билет успешно куплен!")
         except Exception as e:
-            # Откат транзакции в случае ошибки
             db_connection.rollback()
             messagebox.showerror("Ошибка", str(e))
 
@@ -483,17 +464,10 @@ def open_raspisanie_window( user_id, db_connection):
     entry_1 = ttk.Combobox(raspisanie,background="#474747", values=box_stations)
     entry_1.place(x=239.0,y=180.0,width=270.0,height=56.0)
 
-    style.configure("TCombobox",
-                fieldbackground="#474747",
-                background="#474747",
-                foreground="white",
-                selectbackground="#474747",
-                selectforeground="white",
-                font=("Fruktur Regular", 48 * -1))
+    style.configure("TCombobox", fieldbackground="#474747", background="#474747", foreground="white", selectbackground="#474747", selectforeground="white", font=("Fruktur Regular", 48 * -1))
 
     entry_image_2 = PhotoImage( file=relative_to_assets("entry_2.png"))
     entry_bg_2 = canvas.create_image( 889.5, 209.5, image=entry_image_2)
-    # entry_2 = Entry( bd=0, bg="#474747", fg="#000716", highlightthickness=0)
     entry_2 = ttk.Combobox(raspisanie,background="#474747", values=box_stations)
     entry_2.place( x=753.0, y=182.0, width=270.0, height=56.0)
 
@@ -511,7 +485,6 @@ def open_raspisanie_window( user_id, db_connection):
     button_3 = Button( image=button_image_3, borderwidth=0, highlightthickness=0, command=lambda: lk(user_id, db_connection), relief="flat")
     button_3.place(x=1647.0,y=155.0,width=119.0,height=105.0)
 
-    # Таблица расписаний
     columns = ("train_number", "type", "departure_time", "arrival_time", 'station_name', 'route_id', 'cost')
     tree = ttk.Treeview(raspisanie, columns=columns, show="headings")
 
@@ -539,7 +512,5 @@ def open_raspisanie_window( user_id, db_connection):
 
     raspisanie.resizable(False, False)
     raspisanie.mainloop()
-
-
 
 create_first_window()
